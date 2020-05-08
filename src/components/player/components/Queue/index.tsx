@@ -4,21 +4,8 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { XCircle, Menu, Play, Pause } from "react-feather";
 import { Checkbox } from "antd";
 
-import { CurrentPlayingSong, PlayingContext } from '../../../../GlobalContext';
+import { CurrentPlayingSong, PlayingContext, SongType } from '../../../../GlobalContext';
 
-type SongType = {
-    id: string,
-    title: string,
-    artist: string,
-    album?: string,
-    played?: number,
-    lastPlayed?: Date,
-    dateAdded?: Date,
-    genre?: Array<string>,
-    playlist?: Array<string>,
-    tags?: Array<string>,
-    downloadUrl?: string
-}
 type QueueProps = {
     setShowQueue: Function,
     songs?: Array<SongType> | any,
@@ -42,13 +29,11 @@ const Queue = ({ setShowQueue, songs, playlist }: QueueProps) => {
         if (!result.destination) {
             return;
         }
-
         const items: any = reorder(
             list,
             result.source.index,
             result.destination.index
         );
-
         setList(items);
     }
     useEffect(() => {

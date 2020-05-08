@@ -25,7 +25,7 @@ const testSongsObj = {
     playlist: "All Songs"
 }
 const Player = ({ size, setSize }: PlayerProps) => {
-    const [showQueue, setShowQueue] = useState(true);
+    const [showQueue, setShowQueue] = useState(false);
     const { playing, setPlaying } = useContext(PlayingContext);
 
     const handlePlayPause = () => {
