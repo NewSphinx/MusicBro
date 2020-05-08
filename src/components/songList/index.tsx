@@ -7,9 +7,10 @@ import List from './components/List';
 const songRef = db.collection("songs");
 
 type SongListProps = {
-    likeDislike: Function
+    likeDislike: Function,
+    display: boolean
 }
-const SongList = ({ likeDislike }: SongListProps) => {
+const SongList = ({ likeDislike, display }: SongListProps) => {
     const [allSongs, setAllSongs] = useState([]);
     useEffect(() => {
 
@@ -31,7 +32,13 @@ const SongList = ({ likeDislike }: SongListProps) => {
     }, [])
 
     return (
-        <List songs={allSongs} likeDislike={likeDislike} />
+        <>
+            {
+                display
+                    ? <List songs={allSongs} likeDislike={likeDislike} />
+                    : null
+            }
+        </>
     )
 }
 

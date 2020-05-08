@@ -30,6 +30,7 @@ export default MinPlayer;
 const Container = styled.div`
     height: 15%;
     width: 100%;
+    background-color: white;
     position: fixed;
     bottom: 0;
     left:0;    

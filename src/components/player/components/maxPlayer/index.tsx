@@ -59,6 +59,7 @@ const MaxPlayer = ({ playing, handlePlayPause, setSize, setShowQueue }: MaxPlaye
 export default MaxPlayer;
 
 const Container = styled.div`
+    background-color: white;
     padding: 5px;
     height: 100%;    
     display: grid;

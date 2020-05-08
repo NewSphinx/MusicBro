@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+import firebase from 'firebase';
+import { useSwipeable } from 'react-swipeable';
+
+import { db } from './firebase';
 import Player from './components/player'
 import SongList from './components/songList'
 import { PlayingContext, CurrentPlayingSong } from './GlobalContext'
-import { db } from './firebase';
-import firebase from 'firebase';
+
+
 
 import 'antd/dist/antd.css';
 import './App.css';
@@ -12,6 +16,7 @@ function App() {
   const [playing, setPlaying] = useState(false);
   const [currentSong, setCurrentSong] = useState('9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d');
   const [playerSize, setPlayerSize] = useState('hide');
+  const [songListView, setSongListView] = useState(true);
 
   const likeDislike = (obj: { downloadUrl: string, like: boolean, dislike: boolean }) => {
     songRef.where('downloadUrl', '==', obj.downloadUrl)
@@ -38,8 +43,33 @@ function App() {
         })
       })
   }
+
+  const handleSwiped = (eventData: any) => {
+    console.log(eventData);
+    switch (eventData.dir) {
+      case "Up":
+        setPlayerSize('min');
+        setSongListView(false);
+        break;
+      case "Down":
+        setPlayerSize('hide');
+        setSongListView(true);
+        break;
+      default:
+        break;
+    }
+  }
+  const swipeConfig = {
+    delta: 50,                             // min distance(px) before a swipe starts
+    preventDefaultTouchmoveEvent: true,   // preventDefault on touchmove, *See Details*
+    trackTouch: true,                      // track touch input
+    trackMouse: true,                     // track mouse input
+    rotationAngle: 0,                      // set a rotation angle
+  }
+  const swipeHandler = useSwipeable({ onSwiped: eventData => handleSwiped(eventData), ...swipeConfig })
+
   return (
-    <div className="App">
+    <div className="App" {...swipeHandler}>
       <PlayingContext.Provider value={{
         playing,
         setPlaying
@@ -48,7 +78,7 @@ function App() {
           currentSong,
           setCurrentSong
         }} >
-          <SongList likeDislike={likeDislike} />
+          <SongList likeDislike={likeDislike} display={songListView} />
           <Player size={playerSize} setSize={setPlayerSize} />
         </CurrentPlayingSong.Provider>
       </PlayingContext.Provider>
