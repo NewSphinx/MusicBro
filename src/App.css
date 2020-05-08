@@ -1,8 +1,15 @@
 .App {
   text-align: center;
+  display: flex;
+  justify-content: center;  
 }
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+@media (max-width: 500px) {
+  .App{
+    height: 100vh;
+  }  
 }

@@ -28,7 +28,7 @@ const MinPlayer = ({ playing, handlePlayPause, setSize }: MinPlayerProps) => {
 export default MinPlayer;
 
 const Container = styled.div`
-    height: 15vh;
+    height: 15%;
     width: 100%;
     position: fixed;
     bottom: 0;

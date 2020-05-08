@@ -8,10 +8,11 @@ import Seeker from '../common/Seeker';
 type MaxPlayerProps = {
     playing: Boolean,
     handlePlayPause: Function,
-    setSize: Function
+    setSize: Function,
+    setShowQueue: Function
 }
 
-const MaxPlayer = ({ playing, handlePlayPause, setSize }: MaxPlayerProps) => {
+const MaxPlayer = ({ playing, handlePlayPause, setSize, setShowQueue }: MaxPlayerProps) => {
 
 
     return (
@@ -48,7 +49,7 @@ const MaxPlayer = ({ playing, handlePlayPause, setSize }: MaxPlayerProps) => {
                 <Repeat style={{ gridArea: "repeat" }} />
 
                 <Airplay style={{ gridArea: "airplay" }} />
-                <List style={{ gridArea: "playlist" }} />
+                <List style={{ gridArea: "playlist" }} onClick={() => setShowQueue(true)} />
 
             </BottomLayer>
         </Container>
@@ -59,7 +60,7 @@ export default MaxPlayer;
 
 const Container = styled.div`
     padding: 5px;
-    height: 100vh;    
+    height: 100%;    
     display: grid;
     grid-template-rows: 1fr 5fr 2fr;
     z-index: 1;

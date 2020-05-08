@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import './App.css';
 import Player from './components/player'
-import { PlayingContext } from './GlobalContext'
+import { PlayingContext, CurrentPlayingSong } from './GlobalContext'
+
+import 'antd/dist/antd.css';
+import './App.css';
 
 function App() {
   const [playing, setPlaying] = useState(false);
-  const [playerSize, setPlayerSize] = useState('min');
+  const [currentSong, setCurrentSong] = useState('9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d');
+  const [playerSize, setPlayerSize] = useState('max');
 
 
   return (
@@ -14,7 +17,12 @@ function App() {
         playing,
         setPlaying
       }}>
-        <Player size={playerSize} setSize={setPlayerSize} />
+        <CurrentPlayingSong.Provider value={{
+          currentSong,
+          setCurrentSong
+        }} >
+          <Player size={playerSize} setSize={setPlayerSize} />
+        </CurrentPlayingSong.Provider>
       </PlayingContext.Provider>
     </div>
   );
