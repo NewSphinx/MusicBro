@@ -3,11 +3,21 @@ import styled from 'styled-components';
 import { ChevronDown, MoreVertical, MinusCircle, Heart, PauseCircle, PlayCircle, SkipBack, SkipForward, Shuffle, Repeat, List, Airplay } from 'react-feather';
 import Seeker from '../common/Seeker';
 
-const MaxPlayer = () => {
+
+
+type MaxPlayerProps = {
+    playing: Boolean,
+    handlePlayPause: Function,
+    setSize: Function
+}
+
+const MaxPlayer = ({ playing, handlePlayPause, setSize }: MaxPlayerProps) => {
+
+
     return (
         <Container>
             <TopLayer>
-                <ChevronDown />
+                <ChevronDown onClick={() => setSize('min')} />
                 <PlaylistInfo>
                     Playing from Most Played
                 </PlaylistInfo>
@@ -24,13 +34,22 @@ const MaxPlayer = () => {
             </MidLayer>
             <BottomLayer>
                 <Seeker percentage={40} color="blue" gArea={"seeker"} />
+
                 <Shuffle style={{ gridArea: "shuffle" }} />
                 <SkipBack style={{ gridArea: "prev" }} />
-                <PlayCircle style={{ gridArea: "play" }} size={38} />
+
+                {
+                    playing
+                        ? <PauseCircle style={{ gridArea: "play" }} size={38} onClick={() => handlePlayPause()} />
+                        : <PlayCircle style={{ gridArea: "play" }} size={38} onClick={() => handlePlayPause()} />
+                }
+
                 <SkipForward style={{ gridArea: "next" }} />
                 <Repeat style={{ gridArea: "repeat" }} />
+
                 <Airplay style={{ gridArea: "airplay" }} />
                 <List style={{ gridArea: "playlist" }} />
+
             </BottomLayer>
         </Container>
     )
