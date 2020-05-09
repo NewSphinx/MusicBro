@@ -7,10 +7,10 @@ import Player from './components/player'
 import SongList from './components/songList'
 import { PlayingContext, CurrentPlayingSong } from './GlobalContext'
 
-
-
 import 'antd/dist/antd.css';
+import 'react-perfect-scrollbar/dist/css/styles.css';
 import './App.css';
+
 const songRef = db.collection("songs");
 function App() {
   const [playing, setPlaying] = useState(false);

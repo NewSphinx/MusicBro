@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef, useLayoutEffect, useEffect } from 'react';
 import styled from 'styled-components';
 import PerfectScrollBar from 'react-perfect-scrollbar';
 import { MoreVertical, PlayCircle, PauseCircle, Heart, MinusCircle } from 'react-feather';
@@ -10,6 +10,7 @@ type ListProps = {
 }
 const List = ({ songs, likeDislike }: ListProps) => {
     const { playing, setPlaying } = useContext(PlayingContext);
+
     const handleLike = (feel: string, song: SongType) => {
         if (feel === 'like') {
             if (song.like) {
@@ -64,11 +65,15 @@ const List = ({ songs, likeDislike }: ListProps) => {
     }
     return (
         <Container>
-            <PerfectScrollBar>
-                <SongsList>
+
+            <SongsList>
+                <PerfectScrollBar
+                    options={{ minScrollbarLength: 0 }}
+                >
                     {renderSongs(songs)}
-                </SongsList>
-            </PerfectScrollBar>
+                </PerfectScrollBar>
+            </SongsList>
+
         </Container>
     )
 }
@@ -77,15 +82,7 @@ export default List;
 
 const Container = styled.div`    
     height: 100%;    
-    display: grid;
-    grid-auto-rows: 100px;
-    grid-gap: 10px;    
-    @media (max-width: 500px) {
-        position: fixed;
-        left: 0;
-        top:0;
-        width: 100%;
-    }
+    
 `;
 
 const SongsList = styled.div`

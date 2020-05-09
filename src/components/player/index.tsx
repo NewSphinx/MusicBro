@@ -33,7 +33,7 @@ const Player = ({ size, setSize }: PlayerProps) => {
     }
 
     return (
-        <div style={{ height: "100%", width: "100%" }}>
+        <div style={size === 'max' || size === 'min' ? { height: "100%", width: "100%" } : {}}>
             {
                 size === 'max' && !showQueue
                     ? <MaxPlayer playing={playing} handlePlayPause={handlePlayPause} setSize={setSize} setShowQueue={setShowQueue} />
