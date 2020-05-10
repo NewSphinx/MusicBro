@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect } from 'react';
+import React, { useState, useReducer } from 'react';
 import firebase from 'firebase';
 import { useSwipeable } from 'react-swipeable';
 
@@ -10,18 +10,13 @@ import { initState, globalReducer } from './utils'
 import 'antd/dist/antd.css';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import './App.css';
-import { globalAgent } from 'https';
 
 const songRef = db.collection("songs");
-function App() {
+function AppUnMemo() {
   const [playerSize, setPlayerSize] = useState('hide');
   const [songListView, setSongListView] = useState(true);
 
   const [globalState, globalDispatch] = useReducer(globalReducer, initState);
-
-  useEffect(() => {
-    globalDispatch({ type: "flipPlaying" });
-  }, [])
 
   const likeDislike = (obj: { downloadUrl: string, like: boolean, dislike: boolean }) => {
     // set Like | Dislike on the firebase datastore
@@ -62,7 +57,6 @@ function App() {
           setPlayerSize('min');
           setSongListView(true);
         }
-
         break;
       case "Down":
         setPlayerSize('hide');
@@ -72,6 +66,7 @@ function App() {
         break;
     }
   }
+
   const swipeConfig = {
     delta: 50,                             // min distance(px) before a swipe starts
     preventDefaultTouchmoveEvent: true,
@@ -83,12 +78,12 @@ function App() {
 
   return (
     <div className="App" {...swipeHandler}>
-
       <SongList likeDislike={likeDislike} display={songListView} globalState={globalState} globalDispatch={globalDispatch} />
       <Player size={playerSize} setSize={setPlayerSize} globalState={globalState} globalDispatch={globalDispatch} />
-
     </div>
   );
 }
 
+// Hack to solve the dev server hook state update issue, doesn't effect builds
+const App = React.memo(AppUnMemo);
 export default App;

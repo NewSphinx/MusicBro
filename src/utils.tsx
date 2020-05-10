@@ -19,23 +19,38 @@ export type SongType = {
 
 export type GlobalStateType = {
     playing: boolean,
-    currentSong: string,
-    playlistName: string,
-    playlist: Array<SongType>
+    currentSong: {
+        id: string,
+        title: string
+    },
+    playlist: {
+        name: string,
+        list: Array<SongType>
+    }
 }
 type ActionType = {
     type: string,
     payload?: {
-        song?: SongType,
-        playlistName?: string,
-        playlist?: Array<SongType>
+        currentSong?: {
+            id: string,
+            title: string
+        },
+        playlist?: {
+            name: string,
+            list: Array<SongType>
+        }
     }
 }
 export const initState: GlobalStateType = {
     playing: false,
-    currentSong: '',
-    playlistName: '',
-    playlist: []
+    currentSong: {
+        id: '',
+        title: ""
+    },
+    playlist: {
+        name: '',
+        list: []
+    }
 };
 
 export function globalReducer(state: any, action: ActionType) {
@@ -51,12 +66,16 @@ export function globalReducer(state: any, action: ActionType) {
                 return {
                     ...state,
                     playing: true,
-                    song: action.payload.song,
-                    playlistName: action.payload.playlistName ? action.payload.playlistName : '',
-                    playlist: action.payload.playlist ? action.payload.playlist : []
+                    currentSong: action.payload.currentSong,
+                    playlist: action.payload.playlist
                 }
             } else {
                 throw new Error("No payload sent");
+            }
+
+        case "addToPlaylist":
+            return {
+                ...state
             }
 
         default:

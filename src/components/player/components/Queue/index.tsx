@@ -10,7 +10,7 @@ type QueueProps = {
     setShowQueue: Function,
     songs?: Array<SongType> | any,
     playlist?: string,
-    currentSong: string,
+    currentSongId: string,
     playing: boolean
 }
 const reorder = (list: Array<SongType>, startIndex: number, endIndex: number) => {
@@ -20,7 +20,7 @@ const reorder = (list: Array<SongType>, startIndex: number, endIndex: number) =>
 
     return result;
 };
-const Queue = ({ setShowQueue, songs, playlist, currentSong, playing }: QueueProps) => {
+const Queue = ({ setShowQueue, songs, playlist, currentSongId: currentSong, playing }: QueueProps) => {
     const [list, setList] = useState([]);
     const [selectedSongs, setSelectedSongs] = useState([]);
 

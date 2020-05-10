@@ -13,7 +13,9 @@ type PlayerProps = {
     globalDispatch: any
 }
 const Player = ({ size, setSize, globalState, globalDispatch }: PlayerProps) => {
+
     const [showQueue, setShowQueue] = useState(false);
+    const [seek, setSeek] = useState(0);
 
     const handlePlayPause = () => {
         globalDispatch({ type: 'flipPlaying' });
@@ -27,11 +29,11 @@ const Player = ({ size, setSize, globalState, globalDispatch }: PlayerProps) => 
                     : null
             }
             {
-                size === 'min' && <MinPlayer playing={globalState.playing} handlePlayPause={handlePlayPause} setSize={setSize} />
+                size === 'min' && <MinPlayer playing={globalState.playing} currentSong={globalState.currentSong} handlePlayPause={handlePlayPause} setSize={setSize} seek={seek} />
             }
             {
                 showQueue
-                    ? <Queue setShowQueue={setShowQueue} songs={globalState.playlist} playlist={globalState.playlistName} currentSong={globalState.currentSong} playing={globalState.playing} />
+                    ? <Queue setShowQueue={setShowQueue} songs={globalState.playlist.list} playlist={globalState.playlist.name} currentSongId={globalState.currentSong.id} playing={globalState.playing} />
                     : null
             }
         </Container>

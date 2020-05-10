@@ -14,8 +14,8 @@ type SongListProps = {
     globalDispatch: any
 }
 const SongList = ({ likeDislike, display, globalState, globalDispatch }: SongListProps) => {
-    const [allSongs, setAllSongs] = useState([]);
 
+    const [allSongs, setAllSongs] = useState([]);
 
     const handleLike = (feel: string, song: SongType) => {
         if (feel === 'like') {
@@ -34,20 +34,26 @@ const SongList = ({ likeDislike, display, globalState, globalDispatch }: SongLis
         }
     }
 
-    const handlePlay = (songs: Array<SongType>, songId: string, play: boolean) => {
-        // if (play) {
-        //     // Set playlist for automatic queuing 
-        //     setCurrentPlaylist({
-        //         list: songs,
-        //         name: ''
-        //     });
-        //     // Set song for displaying which song is playing || Maybe use a single object and use 1st item of list for current song
-        //     setCurrentSong(songId);
-        //     setPlaying(true);
-        // } else {
-        //     // Set paying context for other components to show correct icon || Maybe use single object 
-        //     setPlaying(false);
-        // }
+    const handlePlay = (songs: Array<SongType>, playlistName: string, song: SongType, play: boolean) => {
+        if (play) {
+            globalDispatch({
+                type: 'playSong',
+                payload: {
+                    currentSong: {
+                        id: song.id,
+                        title: song.title
+                    },
+                    playlist: {
+                        name: playlistName,
+                        list: songs
+                    }
+                }
+            })
+        } else {
+            globalDispatch({
+                type: 'flipPlaying'
+            })
+        }
     }
 
     useEffect(() => {
@@ -69,7 +75,7 @@ const SongList = ({ likeDislike, display, globalState, globalDispatch }: SongLis
         <>
             {
                 display
-                    ? <List songs={allSongs} handleLike={handleLike} handlePlay={handlePlay} currentSong={globalState.currentSong} playing={globalState.playing} />
+                    ? <List songs={allSongs} handleLike={handleLike} handlePlay={handlePlay} currentSongId={globalState.currentSong.id} playing={globalState.playing} />
                     : null
             }
         </>

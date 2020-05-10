@@ -8,10 +8,10 @@ type ListProps = {
     songs: Array<SongType>,
     handleLike: Function,
     handlePlay: Function,
-    currentSong: string,
+    currentSongId: string,
     playing: boolean
 }
-const List = ({ songs, handleLike, handlePlay, currentSong, playing }: ListProps) => {
+const List = ({ songs, handleLike, handlePlay, currentSongId, playing }: ListProps) => {
 
     const renderSongs = (songs: any) => {
         let temp = [];
@@ -28,14 +28,13 @@ const List = ({ songs, handleLike, handlePlay, currentSong, playing }: ListProps
                             <MoreVertical style={{ gridArea: 'options', justifySelf: 'end' }} />
                             <MinusCircle style={{ gridArea: 'dislike' }} onClick={() => handleLike("dislike", song)} color={song.dislike ? 'red' : 'black'} />
                             {
-                                // currentsong only stores the id
-                                currentSong === song.id ?
-                                    playing
-                                        ? <PauseCircle style={{ gridArea: 'play' }} size={32} onClick={(() => handlePlay(songs, song, false))} />
-                                        : <PlayCircle style={{ gridArea: 'play' }} size={32} onClick={(() => handlePlay(songs, song, true))} />
-                                    : <PlayCircle style={{ gridArea: 'play' }} size={32} onClick={(() => handlePlay(songs, song, true))} />
+                                // replace downloadUrl here with id when all songs in firestore have a unique id
+                                playing ?
+                                    currentSongId === song.downloadUrl
+                                        ? <PauseCircle style={{ gridArea: 'play' }} size={32} onClick={(() => handlePlay(false))} />
+                                        : <PlayCircle style={{ gridArea: 'play' }} size={32} onClick={(() => handlePlay(songs, 'All songs', song, true))} />
+                                    : <PlayCircle style={{ gridArea: 'play' }} size={32} onClick={(() => handlePlay(songs, 'All songs', song, true))} />
                             }
-
                             <Heart style={{ gridArea: 'like' }} onClick={() => handleLike("like", song)} color={song.like ? 'red' : 'black'} />
                         </Song>
                     )

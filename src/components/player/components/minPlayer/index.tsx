@@ -6,15 +6,20 @@ import Seeker from '../common/Seeker';
 type MinPlayerProps = {
     playing: Boolean,
     handlePlayPause: Function,
-    setSize: Function
+    setSize: Function,
+    currentSong: {
+        id: string,
+        title: string
+    }
+    seek: number
 }
-const MinPlayer = ({ playing, handlePlayPause, setSize }: MinPlayerProps) => {
+const MinPlayer = ({ playing, handlePlayPause, setSize, currentSong, seek }: MinPlayerProps) => {
     return (
         <Container onClick={() => setSize('max')}>
-            <Seeker percentage={40} color="blue" gArea={"seeker"} />
+            <Seeker percentage={seek} color="blue" gArea={"seeker"} />
             <Heart style={{ gridArea: "like" }} />
             <Info>
-                Creep - Radiohead
+                {currentSong.title ? currentSong.title : 'Nothing playing'}
             </Info>
             {
                 playing
