@@ -2,31 +2,17 @@ import React, { useContext, useRef, useLayoutEffect, useEffect } from 'react';
 import styled from 'styled-components';
 import PerfectScrollBar from 'react-perfect-scrollbar';
 import { MoreVertical, PlayCircle, PauseCircle, Heart, MinusCircle } from 'react-feather';
-import { SongType, PlayingContext } from '../../../GlobalContext'
+import { SongType } from '../../../utils'
 
 type ListProps = {
     songs: Array<SongType>,
-    likeDislike: Function
+    handleLike: Function,
+    handlePlay: Function,
+    currentSong: string,
+    playing: boolean
 }
-const List = ({ songs, likeDislike }: ListProps) => {
-    const { playing, setPlaying } = useContext(PlayingContext);
+const List = ({ songs, handleLike, handlePlay, currentSong, playing }: ListProps) => {
 
-    const handleLike = (feel: string, song: SongType) => {
-        if (feel === 'like') {
-            if (song.like) {
-                likeDislike({ downloadUrl: song.downloadUrl, like: false, dislike: false })
-            } else {
-                likeDislike({ downloadUrl: song.downloadUrl, like: true, dislike: false })
-            }
-
-        } else {
-            if (song.dislike) {
-                likeDislike({ downloadUrl: song.downloadUrl, like: false, dislike: false })
-            } else {
-                likeDislike({ downloadUrl: song.downloadUrl, like: false, dislike: true })
-            }
-        }
-    }
     const renderSongs = (songs: any) => {
         let temp = [];
         if (songs) {
@@ -42,9 +28,12 @@ const List = ({ songs, likeDislike }: ListProps) => {
                             <MoreVertical style={{ gridArea: 'options', justifySelf: 'end' }} />
                             <MinusCircle style={{ gridArea: 'dislike' }} onClick={() => handleLike("dislike", song)} color={song.dislike ? 'red' : 'black'} />
                             {
-                                playing
-                                    ? <PauseCircle style={{ gridArea: 'play' }} size={32} />
-                                    : <PlayCircle style={{ gridArea: 'play' }} size={32} />
+                                // currentsong only stores the id
+                                currentSong === song.id ?
+                                    playing
+                                        ? <PauseCircle style={{ gridArea: 'play' }} size={32} onClick={(() => handlePlay(songs, song, false))} />
+                                        : <PlayCircle style={{ gridArea: 'play' }} size={32} onClick={(() => handlePlay(songs, song, true))} />
+                                    : <PlayCircle style={{ gridArea: 'play' }} size={32} onClick={(() => handlePlay(songs, song, true))} />
                             }
 
                             <Heart style={{ gridArea: 'like' }} onClick={() => handleLike("like", song)} color={song.like ? 'red' : 'black'} />

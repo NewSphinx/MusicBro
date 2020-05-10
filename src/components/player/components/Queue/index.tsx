@@ -4,12 +4,14 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { XCircle, Menu, Play, Pause } from "react-feather";
 import { Checkbox } from "antd";
 
-import { CurrentPlayingSong, PlayingContext, SongType } from '../../../../GlobalContext';
+import { SongType } from '../../../../utils';
 
 type QueueProps = {
     setShowQueue: Function,
     songs?: Array<SongType> | any,
-    playlist?: string
+    playlist?: string,
+    currentSong: string,
+    playing: boolean
 }
 const reorder = (list: Array<SongType>, startIndex: number, endIndex: number) => {
     const result = Array.from(list);
@@ -18,12 +20,10 @@ const reorder = (list: Array<SongType>, startIndex: number, endIndex: number) =>
 
     return result;
 };
-const Queue = ({ setShowQueue, songs, playlist }: QueueProps) => {
+const Queue = ({ setShowQueue, songs, playlist, currentSong, playing }: QueueProps) => {
     const [list, setList] = useState([]);
     const [selectedSongs, setSelectedSongs] = useState([]);
 
-    const { currentSong, setCurrentSong } = useContext(CurrentPlayingSong);
-    const { playing, setPlaying } = useContext(PlayingContext)
 
     const onDragEnd = (result: any) => {
         if (!result.destination) {
@@ -107,6 +107,7 @@ const Queue = ({ setShowQueue, songs, playlist }: QueueProps) => {
 export default Queue;
 
 const Container = styled.div`
+    background-color: white;
     height: 100%;
     width: 100%;    
     display: grid;

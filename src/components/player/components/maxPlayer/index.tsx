@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { ChevronDown, MoreVertical, MinusCircle, Heart, PauseCircle, PlayCircle, SkipBack, SkipForward, Shuffle, Repeat, List, Airplay } from 'react-feather';
 import Seeker from '../common/Seeker';
 
-
-
 type MaxPlayerProps = {
     playing: Boolean,
     handlePlayPause: Function,
@@ -13,7 +11,6 @@ type MaxPlayerProps = {
 }
 
 const MaxPlayer = ({ playing, handlePlayPause, setSize, setShowQueue }: MaxPlayerProps) => {
-
 
     return (
         <Container>

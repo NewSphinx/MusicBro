@@ -1,54 +1,54 @@
 import React, { useContext, useState } from 'react';
+import styled from 'styled-components';
 import MaxPlayer from './components/maxPlayer'
 import MinPlayer from './components/minPlayer';
 import Queue from './components/Queue';
 
-import { PlayingContext } from '../../GlobalContext';
+import { GlobalStateType } from '../../utils';
 
 type PlayerProps = {
     size: String,
-    setSize: Function
+    setSize: Function,
+    globalState: GlobalStateType,
+    globalDispatch: any
 }
-const testSongsObj = {
-    list: [
-        {
-            id: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
-            title: "Creep",
-            artist: "Radiohead"
-        },
-        {
-            id: '9b1deb4d-3b7d-4bad-9bdd-2b0d7asddcb6d',
-            title: "Where did you sleep last night",
-            artist: "Nirvana"
-        }
-    ],
-    playlist: "All Songs"
-}
-const Player = ({ size, setSize }: PlayerProps) => {
+const Player = ({ size, setSize, globalState, globalDispatch }: PlayerProps) => {
     const [showQueue, setShowQueue] = useState(false);
-    const { playing, setPlaying } = useContext(PlayingContext);
 
     const handlePlayPause = () => {
-        setPlaying(!playing);
+        globalDispatch({ type: 'flipPlaying' });
     }
 
     return (
-        <div style={size === 'max' || size === 'min' ? { height: "100%", width: "100%" } : {}}>
+        <Container display={(size === 'hide') ? false : true}>
             {
                 size === 'max' && !showQueue
-                    ? <MaxPlayer playing={playing} handlePlayPause={handlePlayPause} setSize={setSize} setShowQueue={setShowQueue} />
+                    ? <MaxPlayer playing={globalState.playing} handlePlayPause={handlePlayPause} setSize={setSize} setShowQueue={setShowQueue} />
                     : null
             }
             {
-                size === 'min' && <MinPlayer playing={playing} handlePlayPause={handlePlayPause} setSize={setSize} />
+                size === 'min' && <MinPlayer playing={globalState.playing} handlePlayPause={handlePlayPause} setSize={setSize} />
             }
             {
                 showQueue
-                    ? <Queue setShowQueue={setShowQueue} songs={testSongsObj.list} playlist={testSongsObj.playlist} />
+                    ? <Queue setShowQueue={setShowQueue} songs={globalState.playlist} playlist={globalState.playlistName} currentSong={globalState.currentSong} playing={globalState.playing} />
                     : null
             }
-        </div>
+        </Container>
     )
 }
 
 export default Player;
+
+interface ContainerProps {
+    display: boolean
+}
+const Container = styled.div<ContainerProps>`
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    display: ${(props: any) => props.display ? '' : 'none'}
+`;

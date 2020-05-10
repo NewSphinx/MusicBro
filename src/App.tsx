@@ -1,24 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import firebase from 'firebase';
 import { useSwipeable } from 'react-swipeable';
 
 import { db } from './firebase';
 import Player from './components/player'
 import SongList from './components/songList'
-import { PlayingContext, CurrentPlayingSong } from './GlobalContext'
+import { initState, globalReducer } from './utils'
 
 import 'antd/dist/antd.css';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import './App.css';
+import { globalAgent } from 'https';
 
 const songRef = db.collection("songs");
 function App() {
-  const [playing, setPlaying] = useState(false);
-  const [currentSong, setCurrentSong] = useState('9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d');
   const [playerSize, setPlayerSize] = useState('hide');
   const [songListView, setSongListView] = useState(true);
 
+  const [globalState, globalDispatch] = useReducer(globalReducer, initState);
+
+  useEffect(() => {
+    globalDispatch({ type: "flipPlaying" });
+  }, [])
+
   const likeDislike = (obj: { downloadUrl: string, like: boolean, dislike: boolean }) => {
+    // set Like | Dislike on the firebase datastore
     songRef.where('downloadUrl', '==', obj.downloadUrl)
       .get()
       .then((querySnapshot: any) => {
@@ -48,8 +54,15 @@ function App() {
     console.log(eventData);
     switch (eventData.dir) {
       case "Up":
-        setPlayerSize('min');
-        setSongListView(false);
+        if (playerSize === 'min') {
+          setPlayerSize('max');
+          setSongListView(false);
+        }
+        if (playerSize === 'hide') {
+          setPlayerSize('min');
+          setSongListView(true);
+        }
+
         break;
       case "Down":
         setPlayerSize('hide');
@@ -61,27 +74,19 @@ function App() {
   }
   const swipeConfig = {
     delta: 50,                             // min distance(px) before a swipe starts
-    preventDefaultTouchmoveEvent: true,   // preventDefault on touchmove, *See Details*
-    trackTouch: true,                      // track touch input
-    trackMouse: true,                     // track mouse input
-    rotationAngle: 0,                      // set a rotation angle
+    preventDefaultTouchmoveEvent: true,
+    trackTouch: true,
+    trackMouse: true,                     // mouse doesn't still work
+    rotationAngle: 0,
   }
   const swipeHandler = useSwipeable({ onSwiped: eventData => handleSwiped(eventData), ...swipeConfig })
 
   return (
     <div className="App" {...swipeHandler}>
-      <PlayingContext.Provider value={{
-        playing,
-        setPlaying
-      }}>
-        <CurrentPlayingSong.Provider value={{
-          currentSong,
-          setCurrentSong
-        }} >
-          <SongList likeDislike={likeDislike} display={songListView} />
-          <Player size={playerSize} setSize={setPlayerSize} />
-        </CurrentPlayingSong.Provider>
-      </PlayingContext.Provider>
+
+      <SongList likeDislike={likeDislike} display={songListView} globalState={globalState} globalDispatch={globalDispatch} />
+      <Player size={playerSize} setSize={setPlayerSize} globalState={globalState} globalDispatch={globalDispatch} />
+
     </div>
   );
 }
