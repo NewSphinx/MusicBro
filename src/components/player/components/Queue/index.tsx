@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useState, useEffect } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { XCircle, Menu, Play, Pause } from "react-feather";
@@ -11,7 +11,8 @@ type QueueProps = {
     songs?: Array<SongType> | any,
     playlist?: string,
     currentSongId: string,
-    playing: boolean
+    playing: boolean,
+    globalDispatch: any
 }
 const reorder = (list: Array<SongType>, startIndex: number, endIndex: number) => {
     const result = Array.from(list);
@@ -20,25 +21,33 @@ const reorder = (list: Array<SongType>, startIndex: number, endIndex: number) =>
 
     return result;
 };
-const Queue = ({ setShowQueue, songs, playlist, currentSongId: currentSong, playing }: QueueProps) => {
-    const [list, setList] = useState([]);
-    const [selectedSongs, setSelectedSongs] = useState([]);
+const Queue = ({ setShowQueue, songs, playlist, currentSongId: currentSong, playing, globalDispatch }: QueueProps) => {
 
+    // const [selectedSongs, setSelectedSongs] = useState([]);
 
     const onDragEnd = (result: any) => {
         if (!result.destination) {
             return;
         }
         const items: any = reorder(
-            list,
+            songs,
             result.source.index,
             result.destination.index
         );
-        setList(items);
+        globalDispatch({
+            type: "queueReorder",
+            payload: {
+                list: items
+            }
+        })
     }
-    useEffect(() => {
-        setList(songs);
-    }, [])
+    // useEffect(() => {
+
+    // })
+
+    // useEffect(() => {
+    //     setList(songs);
+    // }, [songs])
 
     const renderSongs = (songs: Array<SongType> | undefined) => {
         let temp: Array<ReactNode> = [];
@@ -74,10 +83,13 @@ const Queue = ({ setShowQueue, songs, playlist, currentSongId: currentSong, play
                         </Draggable>
                     )
                 })
+            } else {
+                temp.push(<p>Songs array empty</p>)
             }
         } else {
             temp.push(<p>No songs in the queue yet, add some.</p>)
         }
+        console.log(temp, songs);
         return temp;
     }
     return (
@@ -95,7 +107,7 @@ const Queue = ({ setShowQueue, songs, playlist, currentSongId: currentSong, play
                             {...provided.droppableProps}
                             ref={provided.innerRef}
                         >
-                            {renderSongs(list)}
+                            {renderSongs(songs)}
                             {provided.placeholder}
                         </SongList>
                     )}

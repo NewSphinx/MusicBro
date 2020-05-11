@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+// import { createContext } from 'react';
 
 export type SongType = {
     id: string,
@@ -23,23 +23,24 @@ export type GlobalStateType = {
         id: string,
         title: string
     },
-    playlist: {
-        name: string,
+    queue: {
+        playlistName: string,
         list: Array<SongType>
     }
 }
 type ActionType = {
     type: string,
-    payload?: {
-        currentSong?: {
-            id: string,
-            title: string
-        },
-        playlist?: {
-            name: string,
-            list: Array<SongType>
-        }
-    }
+    payload?: any
+    // {
+    //     currentSong?: {
+    //         id: string,
+    //         title: string
+    //     },
+    //     playlist?: {
+    //         name: string,
+    //         list: Array<SongType>
+    //     }
+    // }
 }
 export const initState: GlobalStateType = {
     playing: false,
@@ -47,8 +48,8 @@ export const initState: GlobalStateType = {
         id: '',
         title: ""
     },
-    playlist: {
-        name: '',
+    queue: {
+        playlistName: '',
         list: []
     }
 };
@@ -67,17 +68,41 @@ export function globalReducer(state: any, action: ActionType) {
                     ...state,
                     playing: true,
                     currentSong: action.payload.currentSong,
-                    playlist: action.payload.playlist
+                    queue: action.payload.playlist
                 }
             } else {
                 throw new Error("No payload sent");
             }
 
-        case "addToPlaylist":
-            return {
-                ...state
+        case "addToQueue":
+            if (action.payload) {
+                return {
+                    ...state,
+                    queue: {
+                        ...state.queue,
+                        list: [
+                            ...state.queue.list,
+                            action.payload.song
+                        ]
+                    }
+                }
+            } else {
+                throw new Error("No payload sent");
+            }
+            break;
+
+        case "queueReorder":
+            if (action.payload) {
+                return {
+                    ...state,
+                    queue: {
+                        ...state.queue,
+                        list: action.payload.list
+                    }
+                }
             }
 
+            break;
         default:
             break;
     }

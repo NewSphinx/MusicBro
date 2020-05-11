@@ -1,8 +1,9 @@
-import React, { useContext, useRef, useLayoutEffect, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import PerfectScrollBar from 'react-perfect-scrollbar';
-import { MoreVertical, PlayCircle, PauseCircle, Heart, MinusCircle } from 'react-feather';
+import { Scrollbars } from 'react-custom-scrollbars';
 import { SongType } from '../../../utils'
+
+import Songs from './Songs';
 
 type ListProps = {
     songs: Array<SongType>,
@@ -13,55 +14,22 @@ type ListProps = {
 }
 const List = ({ songs, handleLike, handlePlay, currentSongId, playing }: ListProps) => {
 
-    const renderSongs = (songs: any) => {
-        let temp = [];
-        if (songs) {
-            if (songs.length > 0) {
-                songs.map((song: any, index: number) => {
-                    temp.push(
-                        <Song key={index}>
-                            <AlbumArt alt="album art" src={song.albumArt ? song.albumArt : `${process.env.PUBLIC_URL}/default-album-art.jpg`} />
 
-                            <Title>{song.title}</Title>
-                            <Artist>{song.artist}</Artist>
-
-                            <MoreVertical style={{ gridArea: 'options', justifySelf: 'end' }} />
-                            <MinusCircle style={{ gridArea: 'dislike' }} onClick={() => handleLike("dislike", song)} color={song.dislike ? 'red' : 'black'} />
-                            {
-                                // replace downloadUrl here with id when all songs in firestore have a unique id
-                                playing ?
-                                    currentSongId === song.downloadUrl
-                                        ? <PauseCircle style={{ gridArea: 'play' }} size={32} onClick={(() => handlePlay(false))} />
-                                        : <PlayCircle style={{ gridArea: 'play' }} size={32} onClick={(() => handlePlay(songs, 'All songs', song, true))} />
-                                    : <PlayCircle style={{ gridArea: 'play' }} size={32} onClick={(() => handlePlay(songs, 'All songs', song, true))} />
-                            }
-                            <Heart style={{ gridArea: 'like' }} onClick={() => handleLike("like", song)} color={song.like ? 'red' : 'black'} />
-                        </Song>
-                    )
-                })
-            } else {
-                temp.push(
-                    <p key={2}>Fetching....</p>
-                )
-            }
-        } else {
-            temp.push(
-                <p>No songs found</p>
-            )
-        }
-        return temp;
-    }
     return (
         <Container>
-
-            <SongsList>
-                <PerfectScrollBar
-                    options={{ minScrollbarLength: 0 }}
+            <Scrollbars>
+                <SongsList
+                    style={{
+                        width: "100%",
+                        height: "100%"
+                    }}
+                    {...true}
+                    autoHideTimeout={1000}
+                    autoHideDuration={200}
                 >
-                    {renderSongs(songs)}
-                </PerfectScrollBar>
-            </SongsList>
-
+                    <Songs songs={songs} handleLike={handleLike} handlePlay={handlePlay} currentSongId={currentSongId} playing={playing} />
+                </SongsList>
+            </Scrollbars>
         </Container>
     )
 }
@@ -70,34 +38,9 @@ export default List;
 
 const Container = styled.div`    
     height: 100%;    
-    
+    width: 100%;
 `;
 
 const SongsList = styled.div`
     
-`;
-
-const Song = styled.div`    
-    border-bottom: 2px dashed lightslategrey;
-    padding: 5px;
-    display:grid;    
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    grid-template-areas: "albumArt artist  artist  options"
-                         "albumArt title   title  title"
-                         "albumArt dislike play   like ";
-    place-items: center;
-`;
-const AlbumArt = styled.img`
-    grid-area: albumArt;
-    height: 100%;       
-    padding: 5px;
-`;
-const Title = styled.p`
-    grid-area: title;
-    justify-self: baseline;
-`;
-const Artist = styled.p`
-    grid-area: artist;
-    justify-self: baseline;
 `;

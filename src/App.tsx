@@ -12,8 +12,9 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 import './App.css';
 
 const songRef = db.collection("songs");
-function AppUnMemo() {
-  const [playerSize, setPlayerSize] = useState('hide');
+function App() {
+  const [playerSize, setPlayerSize] = useState('min');
+  const [menuShow, setMenuShow] = useState(false);
   const [songListView, setSongListView] = useState(true);
 
   const [globalState, globalDispatch] = useReducer(globalReducer, initState);
@@ -58,10 +59,20 @@ function AppUnMemo() {
           setSongListView(true);
         }
         break;
+
       case "Down":
         setPlayerSize('hide');
         setSongListView(true);
         break;
+
+      case "Right":
+        setMenuShow(true);
+        break;
+
+      case "Left":
+        setMenuShow(false);
+        break;
+
       default:
         break;
     }
@@ -84,6 +95,6 @@ function AppUnMemo() {
   );
 }
 
-// Hack to solve the dev server hook state update issue, doesn't effect builds
-const App = React.memo(AppUnMemo);
+// Hack to solve the dev server hook state update issue, doesn't effect builds sometimes it does, not yet on actual deployments but idk anymore
+// const App = React.memo(AppUnMemo);
 export default App;

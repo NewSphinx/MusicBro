@@ -21,6 +21,7 @@ const Player = ({ size, setSize, globalState, globalDispatch }: PlayerProps) => 
         globalDispatch({ type: 'flipPlaying' });
     }
 
+
     return (
         <Container display={(size === 'hide') ? false : true}>
             {
@@ -33,7 +34,7 @@ const Player = ({ size, setSize, globalState, globalDispatch }: PlayerProps) => 
             }
             {
                 showQueue
-                    ? <Queue setShowQueue={setShowQueue} songs={globalState.playlist.list} playlist={globalState.playlist.name} currentSongId={globalState.currentSong.id} playing={globalState.playing} />
+                    ? <Queue setShowQueue={setShowQueue} songs={globalState.queue.list} playlist={globalState.queue.playlistName} currentSongId={globalState.currentSong.id} playing={globalState.playing} globalDispatch={globalDispatch} />
                     : null
             }
         </Container>
@@ -46,9 +47,7 @@ interface ContainerProps {
     display: boolean
 }
 const Container = styled.div<ContainerProps>`
-    height: 100%;
-    width: 100%;
-    position: absolute;
+    
     top: 0;
     left: 0;
     z-index: 100;

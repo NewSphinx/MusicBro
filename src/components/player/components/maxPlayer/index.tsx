@@ -59,6 +59,7 @@ const Container = styled.div`
     background-color: white;
     padding: 5px;
     height: 100%;    
+    position: absolute;
     display: grid;
     grid-template-rows: 1fr 5fr 2fr;
     z-index: 1;

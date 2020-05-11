@@ -21,5 +21,7 @@
   }
   .App{
     margin-top: 5em;
+    height: 100%;
+    overflow: hidden;
   }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase';
 
 import { SongType, GlobalStateType } from '../../utils'
@@ -16,6 +16,20 @@ type SongListProps = {
 const SongList = ({ likeDislike, display, globalState, globalDispatch }: SongListProps) => {
 
     const [allSongs, setAllSongs] = useState([]);
+
+    const handleAddToQueue = (song: SongType) => {
+        globalDispatch({
+            type: 'addToQueue',
+            payload: {
+                song: song
+            }
+        })
+    }
+
+    const handleDelete = (song: SongType) => {
+
+    }
+
 
     const handleLike = (feel: string, song: SongType) => {
         if (feel === 'like') {
