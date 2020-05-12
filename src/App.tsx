@@ -5,23 +5,23 @@ import { useSwipeable } from 'react-swipeable';
 import { db } from './firebase';
 import Player from './components/player'
 import SongList from './components/songList'
-import { initState, globalReducer } from './utils'
+import { initState, globalReducer, SongType } from './utils'
 
 import 'antd/dist/antd.css';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import './App.css';
 
 const songRef = db.collection("songs");
-function App() {
+function AppUnMemo() {
   const [playerSize, setPlayerSize] = useState('min');
   const [menuShow, setMenuShow] = useState(false);
   const [songListView, setSongListView] = useState(true);
 
   const [globalState, globalDispatch] = useReducer(globalReducer, initState);
 
-  const likeDislike = (obj: { downloadUrl: string, like: boolean, dislike: boolean }) => {
+  const likeDislikeBackend = (obj: { id: string, like: boolean, dislike: boolean }) => {
     // set Like | Dislike on the firebase datastore
-    songRef.where('downloadUrl', '==', obj.downloadUrl)
+    songRef.where('id', '==', obj.id)
       .get()
       .then((querySnapshot: any) => {
         querySnapshot.forEach((doc: any) => {
@@ -31,6 +31,51 @@ function App() {
           })
         })
       })
+  }
+  const handleLike = (feel: string, song: SongType) => {
+    console.log("The handler", song)
+    if (feel === 'like') {
+      if (song.like) {
+        likeDislikeBackend({ id: song.id, like: false, dislike: false })
+        globalDispatch({
+          type: "likeDislike",
+          payload: {
+            like: false,
+            dislike: false
+          }
+        })
+      } else {
+        likeDislikeBackend({ id: song.id, like: true, dislike: false })
+        globalDispatch({
+          type: "likeDislike",
+          payload: {
+            like: true,
+            dislike: false
+          }
+        })
+      }
+
+    } else {
+      if (song.dislike) {
+        likeDislikeBackend({ id: song.id, like: false, dislike: false })
+        globalDispatch({
+          type: "likeDislike",
+          payload: {
+            like: false,
+            dislike: false
+          }
+        })
+      } else {
+        likeDislikeBackend({ id: song.id, like: false, dislike: true })
+        globalDispatch({
+          type: "likeDislike",
+          payload: {
+            like: false,
+            dislike: true
+          }
+        })
+      }
+    }
   }
   const updateSong = (options: any) => {
     // Everytime the song is played change the lastPlayed time and increment the number of playedTimes
@@ -82,19 +127,19 @@ function App() {
     delta: 50,                             // min distance(px) before a swipe starts
     preventDefaultTouchmoveEvent: true,
     trackTouch: true,
-    trackMouse: true,                     // mouse doesn't still work
+    trackMouse: true,                     // mouse still doesn't work
     rotationAngle: 0,
   }
   const swipeHandler = useSwipeable({ onSwiped: eventData => handleSwiped(eventData), ...swipeConfig })
 
   return (
     <div className="App" {...swipeHandler}>
-      <SongList likeDislike={likeDislike} display={songListView} globalState={globalState} globalDispatch={globalDispatch} />
-      <Player size={playerSize} setSize={setPlayerSize} globalState={globalState} globalDispatch={globalDispatch} />
+      <SongList likeDislike={handleLike} display={songListView} globalState={globalState} globalDispatch={globalDispatch} />
+      <Player likeDislike={handleLike} size={playerSize} setSize={setPlayerSize} globalState={globalState} globalDispatch={globalDispatch} />
     </div>
   );
 }
 
 // Hack to solve the dev server hook state update issue, doesn't effect builds sometimes it does, not yet on actual deployments but idk anymore
-// const App = React.memo(AppUnMemo);
+const App = React.memo(AppUnMemo);
 export default App;

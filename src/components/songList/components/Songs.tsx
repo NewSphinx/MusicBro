@@ -61,7 +61,7 @@ export default Songs;
 interface SongProps {
     lastItem: boolean
 }
-const Song = styled.div<SongProps>` 
+const Song = styled.div` 
     max-height: 120px;
     border-bottom: 2px dashed lightslategrey;
     padding: 5px;
@@ -72,7 +72,7 @@ const Song = styled.div<SongProps>`
                          "albumArt title   title  title"
                          "albumArt dislike play   like ";
     place-items: center;
-    margin-bottom: ${(props: any) => props.lastItem ? 15 : 0}vh
+    margin-bottom: ${(props: SongProps) => props.lastItem ? 15 : 0}vh
 `;
 const AlbumArt = styled.img`
     grid-area: albumArt;

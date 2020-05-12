@@ -10,27 +10,39 @@ type PlayerProps = {
     size: String,
     setSize: Function,
     globalState: GlobalStateType,
-    globalDispatch: any
+    globalDispatch: any,
+    likeDislike: Function
 }
-const Player = ({ size, setSize, globalState, globalDispatch }: PlayerProps) => {
+const Player = ({ size, setSize, globalState, globalDispatch, likeDislike }: PlayerProps) => {
 
     const [showQueue, setShowQueue] = useState(false);
-    const [seek, setSeek] = useState(0);
+    const [seek, setSeek] = useState(20);
 
     const handlePlayPause = () => {
         globalDispatch({ type: 'flipPlaying' });
     }
 
-
     return (
-        <Container display={(size === 'hide') ? false : true}>
+        <Container
+            display={
+                (size === 'hide')
+                    ? false
+                    : true
+            }
+            size={
+                size === 'min'
+                    ? 'min'
+                    : size === 'max'
+                        ? 'max'
+                        : ''
+            }>
             {
                 size === 'max' && !showQueue
-                    ? <MaxPlayer playing={globalState.playing} handlePlayPause={handlePlayPause} setSize={setSize} setShowQueue={setShowQueue} />
+                    ? <MaxPlayer globalState={globalState} likeDislike={likeDislike} playing={globalState.playing} handlePlayPause={handlePlayPause} setSize={setSize} setShowQueue={setShowQueue} seek={seek} />
                     : null
             }
             {
-                size === 'min' && <MinPlayer playing={globalState.playing} currentSong={globalState.currentSong} handlePlayPause={handlePlayPause} setSize={setSize} seek={seek} />
+                size === 'min' && <MinPlayer likeDislike={likeDislike} playing={globalState.playing} currentSong={globalState.currentSong} handlePlayPause={handlePlayPause} setSize={setSize} seek={seek} />
             }
             {
                 showQueue
@@ -44,12 +56,15 @@ const Player = ({ size, setSize, globalState, globalDispatch }: PlayerProps) => 
 export default Player;
 
 interface ContainerProps {
-    display: boolean
+    display: boolean,
+    size: string
 }
-const Container = styled.div<ContainerProps>`
-    
-    top: 0;
+const Container = styled.div`
+    position: absolute;
+    width: 100%;
+    height: ${(props: ContainerProps) => props.size === 'min' ? 15 : props.size === 'max' ? 100 : 0}% ;
+    top: ${(props: ContainerProps) => props.size === 'min' ? 85 : props.size === 'max' ? 0 : 0}% ;
     left: 0;
     z-index: 100;
-    display: ${(props: any) => props.display ? '' : 'none'}
+    display: ${(props: ContainerProps) => props.display ? '' : 'none'}
 `;

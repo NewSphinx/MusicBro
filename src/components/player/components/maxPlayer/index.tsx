@@ -2,36 +2,63 @@ import React from 'react';
 import styled from 'styled-components';
 import { ChevronDown, MoreVertical, MinusCircle, Heart, PauseCircle, PlayCircle, SkipBack, SkipForward, Shuffle, Repeat, List, Airplay } from 'react-feather';
 import Seeker from '../common/Seeker';
+import { GlobalStateType } from '../../../../utils';
 
 type MaxPlayerProps = {
     playing: Boolean,
+    globalState: GlobalStateType,
     handlePlayPause: Function,
     setSize: Function,
-    setShowQueue: Function
+    setShowQueue: Function,
+    seek: number,
+    likeDislike: Function
 }
 
-const MaxPlayer = ({ playing, handlePlayPause, setSize, setShowQueue }: MaxPlayerProps) => {
+const MaxPlayer = ({ playing, globalState, handlePlayPause, setSize, setShowQueue, seek, likeDislike }: MaxPlayerProps) => {
 
     return (
         <Container>
             <TopLayer>
                 <ChevronDown onClick={() => setSize('min')} />
                 <PlaylistInfo>
-                    Playing from Most Played
+                    {globalState.queue
+                        ? globalState.queue.playlistName
+                            ? `Playing from ${globalState.queue.playlistName}`
+                            : "Currently not playing"
+                        : null
+                    }
                 </PlaylistInfo>
                 <MoreVertical />
             </TopLayer>
             <MidLayer>
                 <AlbumArt alt="album art" src={`${process.env.PUBLIC_URL}/default-album-art.jpg`} />
-                <MinusCircle style={{ gridArea: "dislike" }} />
+                <MinusCircle
+                    style={
+                        globalState.currentSong.dislike
+                            ? { color: 'red', gridArea: 'dislike' }
+                            : { gridArea: "dislike" }}
+                    onClick={() => {
+                        if (globalState.currentSong.id) {
+                            likeDislike("dislike", globalState.currentSong)
+                        }
+                    }} />
                 <SongInfo >
-                    <p>Creep</p>
-                    <p>Radiohead</p>
+                    {<p>{globalState.currentSong.title}</p>}
+                    <p>{globalState.currentSong.artist}</p>
                 </SongInfo>
-                <Heart style={{ gridArea: "like" }} />
+                <Heart
+                    style={
+                        globalState.currentSong.like
+                            ? { color: 'red', gridArea: "like" }
+                            : { gridArea: "like" }}
+                    onClick={() => {
+                        if (globalState.currentSong.id) {
+                            likeDislike("like", globalState.currentSong)
+                        }
+                    }} />
             </MidLayer>
             <BottomLayer>
-                <Seeker percentage={40} color="blue" gArea={"seeker"} />
+                <Seeker percentage={seek} color="blue" gArea={"seeker"} />
 
                 <Shuffle style={{ gridArea: "shuffle" }} />
                 <SkipBack style={{ gridArea: "prev" }} />

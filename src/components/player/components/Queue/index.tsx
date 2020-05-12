@@ -21,9 +21,9 @@ const reorder = (list: Array<SongType>, startIndex: number, endIndex: number) =>
 
     return result;
 };
-const Queue = ({ setShowQueue, songs, playlist, currentSongId: currentSong, playing, globalDispatch }: QueueProps) => {
+const Queue = ({ setShowQueue, songs, playlist, currentSongId, playing, globalDispatch }: QueueProps) => {
 
-    // const [selectedSongs, setSelectedSongs] = useState([]);
+    const [selectedSongs, setSelectedSongs] = useState([]);
 
     const onDragEnd = (result: any) => {
         if (!result.destination) {
@@ -41,14 +41,10 @@ const Queue = ({ setShowQueue, songs, playlist, currentSongId: currentSong, play
             }
         })
     }
-    // useEffect(() => {
 
-    // })
+    const handleSelect = (song: SongType) => {
 
-    // useEffect(() => {
-    //     setList(songs);
-    // }, [songs])
-
+    }
     const renderSongs = (songs: Array<SongType> | undefined) => {
         let temp: Array<ReactNode> = [];
         if (songs) {
@@ -62,13 +58,13 @@ const Queue = ({ setShowQueue, songs, playlist, currentSongId: currentSong, play
                                     {...provided.draggableProps}
 
                                 >
-                                    <Checkbox style={{ gridArea: "select" }} />
+                                    <Checkbox style={{ gridArea: "select" }} onChange={() => handleSelect(song)} />
                                     <SongInfo>
                                         <p>{song.title}</p>
                                         <p>{song.artist}</p>
                                     </SongInfo>
                                     {
-                                        song.id === currentSong
+                                        song.id === currentSongId
                                             ? !playing
                                                 ? <Play size={12} style={{ gridArea: "playing" }} />
                                                 : <Pause size={14} style={{ gridArea: "playing" }} />
@@ -84,12 +80,12 @@ const Queue = ({ setShowQueue, songs, playlist, currentSongId: currentSong, play
                     )
                 })
             } else {
-                temp.push(<p>Songs array empty</p>)
+                temp.push(<p key='dsadoj'>No songs in the queue yet, add some.</p>)
             }
         } else {
-            temp.push(<p>No songs in the queue yet, add some.</p>)
+            temp.push(<p key='dsadoj'>No songs in the queue yet, add some.</p>)
         }
-        console.log(temp, songs);
+
         return temp;
     }
     return (

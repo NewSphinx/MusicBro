@@ -30,35 +30,14 @@ const SongList = ({ likeDislike, display, globalState, globalDispatch }: SongLis
 
     }
 
-
-    const handleLike = (feel: string, song: SongType) => {
-        if (feel === 'like') {
-            if (song.like) {
-                likeDislike({ downloadUrl: song.downloadUrl, like: false, dislike: false })
-            } else {
-                likeDislike({ downloadUrl: song.downloadUrl, like: true, dislike: false })
-            }
-
-        } else {
-            if (song.dislike) {
-                likeDislike({ downloadUrl: song.downloadUrl, like: false, dislike: false })
-            } else {
-                likeDislike({ downloadUrl: song.downloadUrl, like: false, dislike: true })
-            }
-        }
-    }
-
     const handlePlay = (songs: Array<SongType>, playlistName: string, song: SongType, play: boolean) => {
         if (play) {
             globalDispatch({
                 type: 'playSong',
                 payload: {
-                    currentSong: {
-                        id: song.id,
-                        title: song.title
-                    },
-                    playlist: {
-                        name: playlistName,
+                    currentSong: song,
+                    queue: {
+                        playlistName: playlistName,
                         list: songs
                     }
                 }
@@ -89,7 +68,7 @@ const SongList = ({ likeDislike, display, globalState, globalDispatch }: SongLis
         <>
             {
                 display
-                    ? <List songs={allSongs} handleLike={handleLike} handlePlay={handlePlay} currentSongId={globalState.currentSong.id} playing={globalState.playing} />
+                    ? <List songs={allSongs} handleLike={likeDislike} handlePlay={handlePlay} currentSongId={globalState.currentSong.id} playing={globalState.playing} />
                     : null
             }
         </>

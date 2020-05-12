@@ -2,29 +2,34 @@ import React from 'react';
 import styled from 'styled-components';
 import { PlayCircle, PauseCircle, Heart } from 'react-feather';
 import Seeker from '../common/Seeker';
+import { SongType } from '../../../../utils';
 
 type MinPlayerProps = {
     playing: Boolean,
     handlePlayPause: Function,
     setSize: Function,
-    currentSong: {
-        id: string,
-        title: string
-    }
+    likeDislike: Function,
+    currentSong: SongType,
     seek: number
 }
-const MinPlayer = ({ playing, handlePlayPause, setSize, currentSong, seek }: MinPlayerProps) => {
+
+const MinPlayer = ({ playing, handlePlayPause, setSize, currentSong, seek, likeDislike }: MinPlayerProps) => {
+    console.log(currentSong);
     return (
-        <Container onClick={() => setSize('max')}>
+        <Container >
             <Seeker percentage={seek} color="blue" gArea={"seeker"} />
-            <Heart style={{ gridArea: "like" }} />
-            <Info>
+            {
+                currentSong.id
+                    ? <Heart onClick={() => likeDislike("like", currentSong)} style={currentSong.like ? { color: 'red', gridArea: 'like' } : { gridArea: 'like' }} />
+                    : null
+            }
+            <Info onClick={() => setSize('max')}>
                 {currentSong.title ? currentSong.title : 'Nothing playing'}
             </Info>
             {
                 playing
-                    ? <PauseCircle onClick={() => handlePlayPause()} style={{ gridArea: "play" }} />
-                    : <PlayCircle onClick={() => handlePlayPause()} style={{ gridArea: "play" }} />
+                    ? <PauseCircle size={32} onClick={() => handlePlayPause()} style={{ gridArea: 'play' }} />
+                    : <PlayCircle size={32} onClick={() => handlePlayPause()} style={{ gridArea: 'play' }} />
             }
         </Container>
     )
