@@ -1,6 +1,7 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import firebase from 'firebase';
 import { useSwipeable } from 'react-swipeable';
+import { useHowl, Play } from 'rehowl';
 
 import { db } from './firebase';
 import Player from './components/player'
@@ -16,8 +17,52 @@ function AppUnMemo() {
   const [playerSize, setPlayerSize] = useState('min');
   const [menuShow, setMenuShow] = useState(false);
   const [songListView, setSongListView] = useState(true);
+  const [currentSource, setCurrentSource] = useState(['']);
+  const [nextSource, setNextSource] = useState(['']);
 
   const [globalState, globalDispatch] = useReducer(globalReducer, initState);
+
+  useEffect(() => {
+    let temp: any = [];
+    temp.push(globalState.currentSong.downloadUrl);
+    setCurrentSource(temp);
+  }, [globalState.currentSong])
+
+  useEffect(() => {
+    // set the second song in playlist here to preload the song
+    if (globalState.queue.list) {
+      if (globalState.queue.list.length) {
+        let temp1: any = [];
+        temp1.push(globalState.queue.list[1].downloadUrl)
+        setNextSource(temp1);
+      }
+    }
+  }, [globalState.queue])
+
+  const {
+    howl: currentHowl,
+    state: currentState,
+    error: currentError
+  } = useHowl({
+    src: currentSource,
+    format: ['mp3'],
+    html5: true,
+
+  });
+  const {
+    howl: nextHowl,
+    state: nextState,
+    error: nextError
+  } = useHowl({
+    src: nextSource,
+    format: ['mp3'],
+    html5: true,
+  });
+
+  useEffect(() => {
+    console.log("Current Error", currentError);
+    console.log("Next Error", nextError);
+  }, [currentError, nextError])
 
   const likeDislikeBackend = (obj: { id: string, like: boolean, dislike: boolean }) => {
     // set Like | Dislike on the firebase datastore
@@ -134,6 +179,7 @@ function AppUnMemo() {
 
   return (
     <div className="App" {...swipeHandler}>
+      <Play howl={currentHowl} pause={globalState.playing ? false : true} />
       <SongList likeDislike={handleLike} display={songListView} globalState={globalState} globalDispatch={globalDispatch} />
       <Player likeDislike={handleLike} size={playerSize} setSize={setPlayerSize} globalState={globalState} globalDispatch={globalDispatch} />
     </div>
