@@ -95,10 +95,10 @@ function AppUnMemo() {
     console.log(eventData);
     switch (eventData.dir) {
       case "Up":
-        if (playerSize === 'min') {
-          setPlayerSize('max');
-          setSongListView(false);
-        }
+        // if (playerSize === 'min') {
+        //   setPlayerSize('max');
+        //   setSongListView(false);
+        // }
         if (playerSize === 'hide') {
           setPlayerSize('min');
           setSongListView(true);
