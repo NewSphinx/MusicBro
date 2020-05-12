@@ -103,6 +103,7 @@ const PlaylistInfo = styled.div``;
 const MidLayer = styled.div`
     padding: 5px;
     display: grid;
+    line-height: normal;
     grid-template-columns: 1fr 3fr 1fr;
     grid-template-rows: 5fr 1fr;
     grid-template-areas: "albumArt albumArt albumArt"
