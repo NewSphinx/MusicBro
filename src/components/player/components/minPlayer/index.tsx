@@ -14,7 +14,7 @@ type MinPlayerProps = {
 }
 
 const MinPlayer = ({ playing, handlePlayPause, setSize, currentSong, seek, likeDislike }: MinPlayerProps) => {
-    console.log(currentSong);
+
     return (
         <Container >
             <Seeker percentage={seek} color="blue" gArea={"seeker"} />

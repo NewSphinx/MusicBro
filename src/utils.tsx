@@ -1,9 +1,8 @@
-// import { createContext } from 'react';
-
 export type SongType = {
     id: string,
     title: string,
     artist: string,
+    downloadUrl: string,
     album?: string,
     played?: number,
     lastPlayed?: Date,
@@ -11,10 +10,16 @@ export type SongType = {
     genre?: Array<string>,
     playlist?: Array<string>,
     tags?: Array<string>,
-    downloadUrl?: string,
     albumArt?: string,
     like?: boolean,
     dislike?: boolean
+}
+
+export const defaultSong: SongType = {
+    id: '',
+    title: '',
+    artist: '',
+    downloadUrl: ''
 }
 
 export type GlobalStateType = {
@@ -23,7 +28,8 @@ export type GlobalStateType = {
     queue: {
         playlistName: string,
         list: Array<SongType>
-    }
+    },
+    repeat: string
 }
 type ActionType = {
     type: string,
@@ -31,15 +37,12 @@ type ActionType = {
 }
 export const initState: GlobalStateType = {
     playing: false,
-    currentSong: {
-        id: '',
-        title: '',
-        artist: ''
-    },
+    currentSong: defaultSong,
     queue: {
         playlistName: '',
         list: []
-    }
+    },
+    repeat: "none"
 };
 
 export function globalReducer(state: any, action: ActionType) {
@@ -52,11 +55,23 @@ export function globalReducer(state: any, action: ActionType) {
 
         case "playSong":
             if (action.payload) {
+                let newQueue: Array<SongType> = [];
+                newQueue.push(action.payload.currentSong);
+                action.payload.queue.list.map((song: SongType) => {
+                    if (newQueue[0].id !== song.id) {
+                        newQueue.push(song)
+                    }
+                    return null;
+                })
+
                 return {
                     ...state,
                     playing: true,
                     currentSong: action.payload.currentSong,
-                    queue: action.payload.queue
+                    queue: {
+                        list: newQueue,
+                        name: action.payload.queue.name
+                    }
                 }
             } else {
                 throw new Error("No payload sent");
@@ -106,6 +121,13 @@ export function globalReducer(state: any, action: ActionType) {
             }
 
             break;
+
+        case "setRepeat":
+            return {
+                ...state,
+                repeat: action.payload.repeat
+            }
+
         default:
             break;
     }
